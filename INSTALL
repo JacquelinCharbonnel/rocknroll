@@ -1,0 +1,15 @@
+rocknroll - Rsync fOr baCKup and Roll
+Incremental backup maker based on rsync.
+
+INSTALL
+-------
+	Ajust the Makefile, then :
+	make install
+
+DOC
+---
+	rocknroll --man
+
+SEE MORE
+--------
+	http://math.univ-angers.fr/~charbonnel

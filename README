@@ -1,0 +1,184 @@
+NAME
+    rocknroll - Rsync fOr baCKup and Roll
+
+    Light incremental backup tool based on rsync.
+
+SYNOPSIS
+    rocknroll --init n tag dstdir
+
+    rocknroll [options] tag srcdir dstdir
+
+    rocknroll --help
+
+    rocknroll --man
+
+DESCRIPTION
+    rocknroll backups a remote directories tree srcdir in dstdir onto the
+    local host. For this backup, it manages a set of archives, named tag.1,
+    tag.2, etc. Using the 'link-dest' option of rsync, it keeps only the
+    difference between the different archives.
+
+    A dstdir can contain several tagged sequences of archive. For example, a
+    dstdir can contain 2 archive sets named daily.1 daily.2 daily.3 daily.4
+    daily.5 daily.6 daily.7 and week.1 week.2 week.3 week.4.
+
+    Before a dstdir can be able to store an archive sequence, it must be
+    formatted with the --init option.
+
+OPTIONS
+    Almost options can as well be specified into the configuration file.
+
+  -c config_file
+    use an alternate config file.
+
+    By default, rocknroll.conf is searched in ., @/, @/../etc/, /etc/,
+    /etc/rocknroll.d/ and /usr/local/etc, where @ is the directory
+    containing the rocknroll binary.
+
+  --continue
+    start again with an existing .tag.running archive (useful after an
+    abort)
+
+  --debug
+    debug mode
+
+  --dry-run
+    don't perfom any action, just say what it could be done
+
+  --help
+    print usage
+
+  --man
+    print the manual
+
+  --no-links
+    don't specify any --link-dest option to rsync
+
+  --no-roll
+    don't roll up the archives set
+
+  --refresh
+    only update the archive tag.1 (without deletion of any files on it).
+    Don't roll up the archives set.
+
+  --ro "--opt1 --opt2 --opt3"
+    pass some options to rsync (useful only in argument of command line)
+
+  --update
+    update archive tag.1 (with deletion of obsolete files). Don't roll up
+    archives set.
+
+CONFIGURATION FILE
+    Some directives are taken from rocknroll.conf, a file located in @/,
+    @/../etc/, /etc/, /etc/rocknroll.d/ where @ is the directory contained
+    the rocknroll binary.
+
+    The format of a line is :
+
+      directive=value
+
+    or
+
+      directive value
+
+    A # starts a comment.
+
+CONFIGURATION FILE DIRECTIVES
+    Each following directive can be passed as well on the command line as an
+    option.
+
+  link-dest dir
+    by default the link-dest option is set to the tag.1 directory name. This
+    option is to bypass this default.
+
+  mail_from email
+    set the email address of the sender for the mail alerts
+
+  mail_to email
+    set the email address of the recipient for the mail alerts
+
+  max_runtime time_in_second
+    set the max among of time that a backup can take. Older than this value,
+    a .tag.running temporary directory will be deleted.
+
+  rsync_path path/to/rsync
+    specify the path of the rsync command line (default /usr/bin/rsync)
+
+  rsync_retcode_ok n,n,n,n...
+    specify a list of return codes of rsync considered as OK codes. Each
+    code not specified with --rsync_retcode_ok or --rsync_retcode_warn is
+    considered as an error return code.
+
+  rsync_retcode_warn n,n,n...
+    specify a list of return codes of rsync considered as warning codes.
+    Each code not specified with --rsync_retcode_ok or --rsync_retcode_warn
+    is considered as an error return code.
+
+  ro_default "--opt1 --opt2"
+    pass some options to rsync (useful only in config file)
+
+  send_warn 0/1
+    send alert on warning (default is send alert only on error)
+
+  smtp_server smtp_server
+    set the SMTP server
+
+  use_syslog 0/1
+    enable to talk to syslog
+
+ARCHIVE INITIALIZATION
+    This operation is needed before a directory can be used as a backup
+    destination.
+
+  --init n
+    format a backup directory to receive n archives.
+
+FILES AND DIRECTORIES
+  rocknroll.conf
+    configuration file
+
+  .tag.ctl
+    a control file located in the backup directory, related to the tag
+    archive set.
+
+  .tag.running
+    the temporary directory (located in the archive directory) for the
+    running rsync.
+
+SEE ALSO
+    rsnapshot, <http://rsnapshot.org>. rsnapshot and rocknroll have similar
+    functionalities, and rsnapshot has been the first on the place. But when
+    I began to think about rocknroll, I've never heard of rnspashot.
+
+AUTHOR
+    Jacquelin Charbonnel, <jacquelin.charbonnel at math.cnrs.fr>
+
+COPYRIGHT & LICENSE
+    Copyright Jacquelin Charbonnel <jacquelin.charbonnel at math.cnrs.fr>
+
+    This software is governed by the CeCILL-C license under French law and
+    abiding by the rules of distribution of free software. You can use,
+    modify and/ or redistribute the software under the terms of the CeCILL-
+    C license as circulated by CEA, CNRS and INRIA at the following URL
+    "http://www.cecill.info".
+
+    As a counterpart to the access to the source code and rights to copy,
+    modify and redistribute granted by the license, users are provided only
+    with a limited warranty and the software's author, the holder of the
+    economic rights, and the successive licensors have only limited
+    liability.
+
+    In this respect, the user's attention is drawn to the risks associated
+    with loading, using, modifying and/or developing or reproducing the
+    software by the user in light of its specific status of free software,
+    that may mean that it is complicated to manipulate, and that also
+    therefore means that it is reserved for developers and experienced
+    professionals having in-depth computer knowledge. Users are therefore
+    encouraged to load and test the software's suitability as regards their
+    requirements in conditions enabling the security of their systems and/or
+    data to be ensured and, more generally, to use and operate it in the
+    same conditions as regards security.
+
+    The fact that you are presently reading this means that you have had
+    knowledge of the CeCILL-C license and that you accept its terms.
+

@@ -1,0 +1,9 @@
+Revision history for rocknroll
+
+0.1    2006-09-04
+       First version, released on an unsuspecting world.
+
+0.3    2012-04-29
+       new option --man
+       pod revisited
+       default conf file revisited
