@@ -27,8 +27,7 @@ use Dir::Which q/which/;
 
 use strict ;
 
-#my $VERSION = "0.3 rev ".eval{'$Rev: 22 $'=~/(\d+)/;$1;} ; # version management for subversion
-my $VERSION = "1.2.1" ; # version management for git
+my $VERSION = "1.2.2" ; 
 
 my $this_prog = basename($0) ;
 my $NEW_EXT = "_running_snapshot_" ;
@@ -46,6 +45,7 @@ my %arg_conf ;
 my $default_conf = {
   "continue" => 0
   , "debug" => 0
+  , "verbose" => 0
   , "dry-run" => 0
   , "refresh" => 0
   , "link-dest" => ""
@@ -617,6 +617,7 @@ Usage: $this_prog --init n interval_name dstdir (1)
 
   options :
     --debug (1)(2)
+    --verbose (1)(2)
     --excludes=DIR (2)
     --ro rsync_option (2)
     --link-dest=DIR (2)
@@ -731,6 +732,10 @@ $config->init($default_conf,\%arg_conf) ;
 $config->load() ;
 
 $log = new Log($cmdline,$config->get("debug")?2:$config->get("verbose")?1:0) ;
+{
+  my $confname = $config->{"config_file"} ;
+  $log->info(defined($confname) ? "using config file: $confname" : "no file $this_prog.conf found in $CONFPATH") ;
+}
 $log->debug("config: ".Dumper $config) ;
 
 my $interval = shift() or usage("wrong number of arguments") ;
@@ -821,6 +826,10 @@ abort)
 =head2 --debug
 
 debug mode
+
+=head2 --verbose
+
+verbose mode
 
 =head2 --dry-run
 
