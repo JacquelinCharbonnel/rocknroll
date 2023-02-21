@@ -42,6 +42,9 @@ OPTIONS
   --debug
     debug mode
 
+  --verbose
+    verbose mode
+
   --dry-run
     don't perfom any action, just say what it could be done
 
