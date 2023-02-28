@@ -7,3 +7,6 @@ Revision history for rocknroll
        new option --man
        pod revisited
        default conf file revisited
+       
+1.1.2  2023-02-21
+        Print the config file name in verbose  mode
