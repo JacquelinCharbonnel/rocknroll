@@ -12,6 +12,7 @@
 #   2024-12-25 add "rsync_cmd" new option
 #   2024-12-25 ajust usage and manual text
 #   2024-12-25 add "config_dump" new option
+#   2024-12-25 change default value for link_dest option
 #
 ####################################################
 
@@ -31,7 +32,7 @@ use Dir::Which q/which/;
 
 use strict ;
 
-my $VERSION = "1.3.3" ; 
+my $VERSION = "1.3.4" ; 
 
 my $this_prog = basename($0) ;
 my $NEW_EXT = "_running_snapshot_" ;
@@ -479,8 +480,8 @@ END { $log->send() if $log ; closelog() ; }
     else
     {
       $ld = exists($this->{"linkdest"})
-        ? "--link-dest=$this->{'linkdest'}"
-        : "--link-dest=../${interval}.1" ;
+        ? "--link-dest = $this->{'linkdest'}"
+        : "--link-dest = $dstdir/${interval}.1" ;
     }
 
     my $cmd = sprintf("%s %s %s %s $ld $srcdir $dstdir/$running"
