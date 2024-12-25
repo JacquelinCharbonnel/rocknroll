@@ -10,6 +10,8 @@
 # Changed:
 #   2012-07-24 last svn commit  
 #   2024-12-25 add "rsync_cmd" new option
+#   2024-12-25 ajust usage and manual text
+#   2024-12-25 add "config_dump" new option
 #
 ####################################################
 
@@ -29,7 +31,7 @@ use Dir::Which q/which/;
 
 use strict ;
 
-my $VERSION = "1.3.2" ; 
+my $VERSION = "1.3.3" ; 
 
 my $this_prog = basename($0) ;
 my $NEW_EXT = "_running_snapshot_" ;
@@ -46,6 +48,7 @@ my %arg_conf ;
 
 my $default_conf = {
   "continue" => 0
+  , "config_dump" => 0
   , "debug" => 0
   , "verbose" => 0
   , "dry-run" => 0
@@ -273,6 +276,22 @@ END { $log->send() if $log ; closelog() ; }
     return $this->{"conf"}{$var} if exists($this->{"conf"}{$var}) ;
     return $this->{"default"}{$var} if exists($this->{"default"}{$var}) ;
     die "'$var' not found in config\n" ;
+  }
+
+  sub dump
+  {
+    my($this) = @_ ;
+
+    my $h = {} ;
+
+    for my $k (keys %{$this->{"arg"}}) { $h->{$k} = 1 ; }
+    for my $k (keys %{$this->{"conf"}}) { $h->{$k} = 1 ; }
+    for my $k (keys %{$this->{"default"}}) { $h->{$k} = 1 ; }
+    for my $k (keys %$h) { $h->{$k} = $this->get($k) ; }
+
+    my $cg = new Config::General() ;
+    my $s = $cg->save_string($h) ;
+    return $s ;
   }
 }
 
@@ -623,6 +642,7 @@ $msg
 Usage: $this_prog options --init n series dstdir (1)
        $this_prog options series srcdir dstdir (2)
        $this_prog --man
+       $this_prog --config_dump
 
   options :
     --debug (1)(2)
@@ -703,6 +723,7 @@ GetOptions(
   \%arg_conf
   , "init=s" => \$init
   , "c=s" => \$config_file
+  , "config_dump" 
   , "continue"                             # start again with an existing .running archive
   , "help" => \&usage
   , "man" => \&man
@@ -741,6 +762,12 @@ else
 }
 $config->init($default_conf,\%arg_conf) ;
 $config->load() ;
+
+if ($config->get("config_dump")==1)
+{
+  print $config->dump() ;
+  exit(0) ;
+}
 
 $log = new Log($cmdline,$config->get("debug")?2:$config->get("verbose")?1:0) ;
 {
@@ -802,6 +829,8 @@ rocknroll [options] series srcdir dstdir
 rocknroll --help
 
 rocknroll --man
+
+rocknroll --config_dump
 
 =head1 DESCRIPTION
 
