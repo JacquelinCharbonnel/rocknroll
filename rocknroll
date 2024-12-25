@@ -9,6 +9,7 @@
 #
 # Changed:
 #   2012-07-24 last svn commit  
+#   2024-12-25 add "rsync_cmd" new option
 #
 ####################################################
 
@@ -28,7 +29,7 @@ use Dir::Which q/which/;
 
 use strict ;
 
-my $VERSION = "1.2.3" ; 
+my $VERSION = "1.3.1" ; 
 
 my $this_prog = basename($0) ;
 my $NEW_EXT = "_running_snapshot_" ;
@@ -65,6 +66,7 @@ my $default_conf = {
   , "update" => 0
   , "use_syslog" => 1
   , "verbose" => 0
+  , "rsync_cmd" => 0
 } ;
 
 my ($log,@files,$init,@excludes,@rsync_options,$dry_run,$config,$config_file,$arg) ;
@@ -441,7 +443,7 @@ END { $log->send() if $log ; closelog() ; }
     my $dstdir = $this->{"dstdir"} ;
     my $interval = $this->{"interval"} ;
     my @files = @{$this->{"files"}} ;
-        my $running = ($config->get("refresh") || $config->get("update"))
+    my $running = ($config->get("refresh") || $config->get("update"))
                   ? "$interval.1"
                   : ".$interval.running" ;
 
@@ -468,6 +470,12 @@ END { $log->send() if $log ; closelog() ; }
             , $config->get("ro_default")
             , $jro
     ) ;
+
+    if ($config->get("rsync_cmd")==1)
+    {
+      print "$cmd\n" ;
+      exit(0) ;
+    }
 
     my $retcode = main::myexec($cmd) ;
     $log->crit_by_mail("$dstdir/$running not found after rsync execution") unless -d "$dstdir/$running" ;
@@ -626,6 +634,7 @@ Usage: $this_prog --init n interval_name dstdir (1)
     --refresh (2)
     --update (2)
     --continue (2)
+    --rsync_cmd (1)(2)
 
   example :
     $this_prog --init 7 daily /var/snapshots/home
@@ -706,6 +715,7 @@ GetOptions(
   , "no-links"
   , "no-roll"
   , "refresh"                              # update archive .1, without deleting any files
+  , "rsync_cmd"
   , "rsync_retcode_ok=s"
   , "rsync_retcode_warn=s"
   , "ro=s@"
@@ -785,7 +795,7 @@ Light incremental backup tool based on rsync.
 
 =head1 SYNOPSIS
 
-rocknroll --init n tag dstdir
+rocknroll [options] --init n tag dstdir
 
 rocknroll [options] tag srcdir dstdir
 
@@ -835,6 +845,10 @@ verbose mode
 =head2 --dry-run
 
 don't perfom any action, just say what it could be done
+
+=head2 --rsync_cmd
+
+just print the rsync command which must be run
 
 =head2 --help
 
