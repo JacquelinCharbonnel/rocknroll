@@ -7,7 +7,8 @@
 # http://math.univ-angers.fr/~charbonnel/rocknroll
 # Jacquelin Charbonnel - CNRS/Mathrice/LAREMA - 2006-09-04
 #
-# $Id: rocknroll 22 2012-07-24 11:57:10Z jacquelin.charbonnel $
+# Changed:
+#   2012-07-24 last svn commit  
 #
 ####################################################
 
@@ -27,7 +28,7 @@ use Dir::Which q/which/;
 
 use strict ;
 
-my $VERSION = "1.2.2" ; 
+my $VERSION = "1.2.3" ; 
 
 my $this_prog = basename($0) ;
 my $NEW_EXT = "_running_snapshot_" ;
