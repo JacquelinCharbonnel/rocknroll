@@ -480,8 +480,8 @@ END { $log->send() if $log ; closelog() ; }
     else
     {
       $ld = exists($this->{"linkdest"})
-        ? "--link-dest = $this->{'linkdest'}"
-        : "--link-dest = $dstdir/${interval}.1" ;
+        ? "--link-dest=$this->{'linkdest'}"
+        : "--link-dest=$dstdir/${interval}.1" ;
     }
 
     my $cmd = sprintf("%s %s %s %s $ld $srcdir $dstdir/$running"
